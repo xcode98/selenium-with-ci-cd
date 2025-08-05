@@ -70,7 +70,7 @@ allureServe {
 // Configuración SonarQube
 sonar {
     properties {
-        property "sonar.projectKey", "fck2-selenium-automation"
+        property "sonar.projectKey", "xcode98_selenium-with-ci-cd"
         property "sonar.organization", "xcode98"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectName", "FCK2 Selenium Automation"
