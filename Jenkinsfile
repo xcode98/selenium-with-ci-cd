@@ -36,7 +36,7 @@ pipeline {
             post {
                 always {
                     // Publicar resultados de tests
-                    publishTestResults testResultsPattern: 'build/test-results/test/*.xml'
+                    junit 'build/test-results/test/*.xml'
                     
                     // Archivar reportes de test
                     archiveArtifacts artifacts: 'build/reports/tests/**/*', allowEmptyArchive: true
