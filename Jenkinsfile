@@ -47,11 +47,11 @@ pipeline {
         stage('Allure Report') {
             steps {
                 echo '📊 Generating Allure report...'
-                sh './gradlew allureReport'
+                sh 'gradle allureReport'
             }
             post {
                 always {
-                    // Publicar reporte Alluree
+                    // Publicar reporte Allure
                     allure([
                         includeProperties: false,
                         jdk: '',
