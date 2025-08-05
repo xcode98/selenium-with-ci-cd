@@ -21,14 +21,32 @@ public class BasePage {
         if (driver == null) {
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
+            
+            // Opciones básicas
             options.addArguments("--disable-blink-features=AutomationControlled");
             options.addArguments("--disable-extensions");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--remote-allow-origins=*");
             
+            // Opciones específicas para CI/CD
+            options.addArguments("--headless");  // Ejecutar sin interfaz gráfica
+            options.addArguments("--disable-gpu");
+            options.addArguments("--disable-software-rasterizer");
+            options.addArguments("--disable-background-timer-throttling");
+            options.addArguments("--disable-backgrounding-occluded-windows");
+            options.addArguments("--disable-renderer-backgrounding");
+            options.addArguments("--disable-features=TranslateUI");
+            options.addArguments("--disable-ipc-flooding-protection");
+            
+            // Solución específica para user-data-dir
+            String userDataDir = System.getProperty("java.io.tmpdir") + "/chrome-user-data-" + System.currentTimeMillis();
+            options.addArguments("--user-data-dir=" + userDataDir);
+            
+            // Configuración de ventana para headless
+            options.addArguments("--window-size=1920,1080");
+            
             driver = new ChromeDriver(options);
-            driver.manage().window().maximize();
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
             wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         }
