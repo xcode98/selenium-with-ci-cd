@@ -1,7 +1,14 @@
 # Travis CI configuration for FCK2 Selenium project
+# Aplicando lecciones del Jenkinsfile funcional
 language: java
 jdk:
   - openjdk17
+
+# Configurar stages como en Jenkins
+stages:
+  - name: "Build & Test"
+  - name: "Quality Analysis"
+    if: branch = main
 
 # Cache para acelerar builds
 cache:
@@ -14,12 +21,10 @@ cache:
 env:
   - GRADLE_OPTS="-Xmx1024m"
 
-# Scripts de ejecución
-script:
+# Instalar herramientas (global para todos los jobs)
+install:
+  - echo "🔧 Setting up environment..."
   - chmod +x ./gradlew
-  - ./gradlew clean test --info
-  - ./gradlew allureReport
-  - ./gradlew sonar
 
 # Configuración SonarQube
 addons:
@@ -28,9 +33,40 @@ addons:
     token:
       secure: "a50c59c7bb88750bc54065ce01c7511b930cde80"
 
-# Artifacts (opcional)
+# Manejo de artifacts y reportes (como en Jenkinsfile)
+after_script:
+  - echo "📋 Archiving test reports..."
+  - ls -la build/test-results/test/ || echo "No test results found"
+  - ls -la build/reports/tests/ || echo "No test reports found"
+  - ls -la build/allure-results/ || echo "No allure results found"
+
 after_success:
-  - echo "✅ Tests y análisis completados exitosamente"
+  - echo "✅ Build, tests y análisis completados exitosamente"
+  - echo "🔍 Check SonarQube results at: https://sonarcloud.io/project/overview?id=xcode98_selenium-with-ci-cd"
+
+after_failure:
+  - echo "❌ Pipeline failed!"
+  - echo "📋 Check logs above for details"
+
+# Jobs por stage (como en Jenkinsfile)
+jobs:
+  include:
+    - stage: "Build & Test"
+      name: "Build and Test"
+      script:
+        - echo "🔨 Building project..."
+        - gradle clean build --info
+        - echo "🧪 Running tests..."
+        - gradle test --info
+        - echo "📊 Generating Allure report..."
+        - gradle allureReport
+    
+    - stage: "Quality Analysis"
+      name: "SonarQube Analysis"
+      script:
+        - echo "🔍 Running SonarQube analysis..."
+        - gradle sonar --info
+      if: branch = main
 
 # Notificaciones
 notifications:
