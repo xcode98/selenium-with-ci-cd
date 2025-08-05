@@ -1,3 +1,4 @@
+# Travis CI configuration for FCK2 Selenium project
 language: java
 jdk:
   - openjdk17
