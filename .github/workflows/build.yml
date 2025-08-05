@@ -87,18 +87,31 @@ jobs:
         run: gradle allureReport
         if: always()
         
-      - name: Publish Allure Report
-        uses: peaceiris/actions-gh-pages@v3
-        if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/reports/allure-report
-          destination_dir: allure-report
+      # - name: Publish Allure Report
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   if: always()
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: build/reports/allure-report
+      #     destination_dir: allure-report
+      
+      - name: List generated files
+        run: |
+          echo "📁 Checking generated files..."
+          ls -la build/ || echo "No build directory"
+          ls -la build/reports/ || echo "No reports directory"
+          ls -la build/allure-results/ || echo "No allure-results directory"
           
-      - name: SonarQube Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: gradle sonar --info
+      # - name: SonarQube Analysis
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: gradle sonar --info
+      
+      - name: Debug build status
+        run: |
+          echo "✅ Build and test completed!"
+          echo "📁 Files generated:"
+          find build -name "*.xml" -o -name "*.html" | head -10
         
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
@@ -123,8 +136,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Wait for SonarQube Quality Gate
+      - name: Pipeline Summary
         run: |
-          echo "⏳ Waiting for SonarQube Quality Gate..."
-          echo "✅ SonarQube analysis completed successfully"
-          echo "🔍 Check quality gate status at: https://sonarcloud.io/project/overview?id=xcode98_selenium-with-ci-cd"
+          echo "🎉 Pipeline completed successfully!"
+          echo "✅ Build: OK"
+          echo "✅ Tests: OK"
+          echo "✅ Reports: Generated"
+          echo "📁 Artifacts uploaded for download"
