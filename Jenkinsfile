@@ -23,15 +23,27 @@ pipeline {
         stage('Build') {
             steps {
                 echo '🔨 Building project...'
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build --info'
+                script {
+                    if (fileExists('./gradlew')) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew clean build --info'
+                    } else {
+                        sh 'gradle clean build --info'
+                    }
+                }
             }
         }
         
         stage('Test') {
             steps {
                 echo '🧪 Running tests...'
-                sh './gradlew test --info'
+                script {
+                    if (fileExists('./gradlew')) {
+                        sh './gradlew test --info'
+                    } else {
+                        sh 'gradle test --info'
+                    }
+                }
             }
             post {
                 always {
@@ -67,7 +79,13 @@ pipeline {
             steps {
                 echo '🔍 Running SonarQube analysis...'
                 withSonarQubeEnv('SonarCloud') {
-                    sh './gradlew sonar'
+                    script {
+                        if (fileExists('./gradlew')) {
+                            sh './gradlew sonar'
+                        } else {
+                            sh 'gradle sonar'
+                        }
+                    }
                 }
             }
         }
