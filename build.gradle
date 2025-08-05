@@ -75,10 +75,12 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectName", "FCK2 Selenium Automation"
         property "sonar.projectVersion", "1.0"
-        property "sonar.sources", "src/test/java"
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
         property "sonar.java.source", "17"
         property "sonar.java.target", "17"
         property "sonar.coverage.exclusions", "**/runner/**,**/steps/**"
         property "sonar.cpd.exclusions", "**/pages/**"
+        property "sonar.test.exclusions", "**/runner/**"
     }
 }
