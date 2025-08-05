@@ -4,6 +4,7 @@ pipeline {
     tools {
         // Configurar Java 17
         jdk 'Java17'
+        gradle 'Gradle8'
     }
     
     environment {
@@ -23,27 +24,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo '🔨 Building project...'
-                script {
-                    if (fileExists('./gradlew')) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew clean build --info'
-                    } else {
-                        sh 'gradle clean build --info'
-                    }
-                }
+                sh 'gradle clean build --info'
             }
         }
         
         stage('Test') {
             steps {
                 echo '🧪 Running tests...'
-                script {
-                    if (fileExists('./gradlew')) {
-                        sh './gradlew test --info'
-                    } else {
-                        sh 'gradle test --info'
-                    }
-                }
+                sh 'gradle test --info'
             }
             post {
                 always {
@@ -79,13 +67,7 @@ pipeline {
             steps {
                 echo '🔍 Running SonarQube analysis...'
                 withSonarQubeEnv('SonarCloud') {
-                    script {
-                        if (fileExists('./gradlew')) {
-                            sh './gradlew sonar'
-                        } else {
-                            sh 'gradle sonar'
-                        }
-                    }
+                    sh 'gradle sonar'
                 }
             }
         }
