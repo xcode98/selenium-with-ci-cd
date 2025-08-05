@@ -25,8 +25,8 @@ public class FormularioSteps {
         //BasePage.quitDriver();
     }
     
-    @Dado("^completo el formulario con nombre \"(.+)\" apellido \"(.+)\" direccion \"(.+)\" email \"(.+)\" telefono \"(.+)\" genero \"(.+)\" idioma \"(.+)\" pais \"(.+)\" anio \"(.+)\" mes \"(.+)\" dia \"(.+)\" password \"(.+)\" confirmPassword \"(.+)\"$")
-    public void completoFormularioConParametros(String nombre, String apellido, String direccion, String email, String telefono, String genero, String idioma, String pais, String anio, String mes, String dia, String password, String confirmPassword) {
+    @Dado("^completo el formulario con nombre \"(.+)\" apellido \"(.+)\" direccion \"(.+)\" email \"(.+)\" telefono \"(.+)\" idioma \"(.+)\" skill \"(.+)\" pais \"(.+)\" anio \"(.+)\" mes \"(.+)\" dia \"(.+)\" password \"(.+)\" confirmPassword \"(.+)\"$")
+    public void completoFormularioConParametros(String nombre, String apellido, String direccion, String email, String telefono, String idioma, String skill, String pais, String anio, String mes, String dia, String password, String confirmPassword) {
         formulario.visitarPaginaFormulario();
         
         // Llenar formulario con parámetros del Feature
@@ -36,8 +36,8 @@ public class FormularioSteps {
             direccion, 
             email, 
             telefono, 
-            genero,
             idioma,
+            skill,
             pais,
             anio, 
             mes, 

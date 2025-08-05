@@ -92,17 +92,21 @@ public class Formulario extends BasePage{
         // Aqui se obtienen todos los elementos del dropdown
         List<WebElement> options = bringMeAllElements(languageOptions);
         
+        boolean found = false;
         for (WebElement option : options) {
             String optionText = option.getText();
             System.out.println("- " + optionText);
             if (optionText.equalsIgnoreCase(language)) {
-                System.out.println("✅ SELECCIONANDO: '" + language + "'");
+                System.out.println("✅ IDIOMA SELECCIONADO: '" + language + "'");
                 option.click(); // Hacer clic directamente en el WebElement
-                break; // Salir del método una vez seleccionado
+                found = true;
+                break; // Salir del bucle una vez seleccionado
             }
         }
         
-        System.out.println("❌ IDIOMA NO ENCONTRADO: '" + language + "'");
+        if (!found) {
+            System.out.println("❌ IDIOMA NO ENCONTRADO: '" + language + "'");
+        }
     }
 
     public void selectSkill(String skill) {
