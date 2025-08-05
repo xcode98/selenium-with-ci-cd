@@ -19,12 +19,14 @@ script:
   - chmod +x ./gradlew
   - ./gradlew clean test --info
   - ./gradlew allureReport
-  - ./gradlew sonar --info
+  - ./gradlew sonar
 
 # Configuración SonarQube
 addons:
   sonarcloud:
     organization: "xcode98"
+    token:
+      secure: "a50c59c7bb88750bc54065ce01c7511b930cde80"
 
 # Artifacts (opcional)
 after_success:
