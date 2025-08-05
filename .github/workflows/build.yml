@@ -12,6 +12,11 @@ jobs:
   test-and-analyze:
     name: Test and SonarQube Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 20  # ⏰ Timeout para evitar jobs infinitos
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     
     steps:
       - name: Checkout code
@@ -32,6 +37,11 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
           
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: '8.4'
+          
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -46,10 +56,10 @@ jobs:
         run: chmod +x ./gradlew
         
       - name: Build project
-        run: ./gradlew clean build --info
+        run: gradle clean build --info
         
       - name: Run tests
-        run: ./gradlew test --info
+        run: gradle test --info
         continue-on-error: true
         
       - name: Publish Test Results
@@ -66,10 +76,15 @@ jobs:
         if: always()
         with:
           name: test-reports
-          path: build/reports/tests/**/*
+          path: |
+            build/reports/tests/**/*
+            build/test-results/**/*
+          retention-days: 7  # 🗑️ Solo 7 días (vs 90 default)
+          compression-level: 9  # 📋 Máxima compresión
+          if-no-files-found: warn  # ⚠️ Solo advertir si no hay archivos
           
       - name: Generate Allure Report
-        run: ./gradlew allureReport
+        run: gradle allureReport
         if: always()
         
       - name: Publish Allure Report
@@ -83,18 +98,24 @@ jobs:
       - name: SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar --info
+        run: gradle sonar --info
         
       - name: Upload Allure Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-results
-          path: build/allure-results/
+          path: |
+            build/allure-results/
+            build/reports/allure-report/
+          retention-days: 14  # 🗑️ Solo 14 días para Allure
+          compression-level: 9  # 📋 Máxima compresión
+          if-no-files-found: warn  # ⚠️ Solo advertir si no hay archivos
           
   quality-gate:
     name: Quality Gate
     runs-on: ubuntu-latest
+    timeout-minutes: 5   # ⏰ Timeout para quality gate
     needs: test-and-analyze
     if: always()
     
