@@ -1,5 +1,5 @@
 # language: es
-@Test
+
 Característica: Formulario
 
   Esquema del escenario: Completar formulario con validaciones

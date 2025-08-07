@@ -30,7 +30,7 @@ public class BasePage {
             options.addArguments("--remote-allow-origins=*");
             
             // Opciones específicas para CI/CD
-            options.addArguments("--headless");  // Ejecutar sin interfaz gráfica
+            //options.addArguments("--headless");  // Ejecutar sin interfaz gráfica
             options.addArguments("--disable-gpu");
             options.addArguments("--disable-software-rasterizer");
             options.addArguments("--disable-background-timer-throttling");
@@ -48,7 +48,7 @@ public class BasePage {
             
             driver = new ChromeDriver(options);
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         }
     }
     
@@ -67,6 +67,23 @@ public class BasePage {
     // Método para encontrar un elemento
     protected WebElement findElement(By locator) {
         return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
+    // Esperar a que un elemento sea visible
+    protected void waitUntilVisible(By locator, int seconds) {
+        new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(seconds))
+            .until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    // Esperar a que un elemento sea clickeable
+    protected void waitUntilClickable(By locator, int seconds) {
+        new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(seconds))
+            .until(org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable(locator));
+    }
+
+    // Obtener el valor de un input
+    protected String getInputValue(By locator) {
+        return findElement(locator).getAttribute("value");
     }
     
     // Método para seleccionar opción de un dropdown
