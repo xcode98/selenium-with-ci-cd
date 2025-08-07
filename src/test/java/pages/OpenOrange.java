@@ -79,7 +79,13 @@ public class OpenOrange extends BasePage {
         sendKeys2(inputFirstName, firstName);
         sendKeys2(inputMiddleName, middleName);
         sendKeys2(inputLastName, lastName);
+        
+        // Esperar un poco para que se genere el Employee ID
+        Thread.sleep(500);
+        
         storedEmployeeId = getEmployeeId();
+        System.out.println("🆔 Employee ID capturado durante la creación: " + storedEmployeeId);
+        
         clickElement(checkBox);
         Thread.sleep(1500);
     }
@@ -105,19 +111,47 @@ public class OpenOrange extends BasePage {
 
     public String verifyLoginDetails() {
         clickElement(btnPIM);
-        sendKeys2(inputEmployeeIdNew, getStoredEmployeeId()+ Keys.ENTER); 
-
+        
+        // Separar el envío del texto y la presión de ENTER
+        sendKeys2(inputEmployeeIdNew, getStoredEmployeeId());
+        
+        // Presionar ENTER de forma separada
+        WebElement searchField = findElement(inputEmployeeIdNew);
+        searchField.sendKeys(Keys.ENTER);
+        
+        System.out.println("🔍 Búsqueda ejecutada para Employee ID: " + storedEmployeeId);
+        
         
         //Esperar a que aparezcan los resultados de la búsqueda
         try {
-            Thread.sleep(2000); // Espera para que carguen los resultados
+            Thread.sleep(3000); // Espera más tiempo para que carguen los resultados
             
-            // Extraer el Employee ID de la primera fila de la tabla de resultados
-            String employeeIdFromTable = findElement(employeeIdInTable).getText().trim();
-            System.out.println("Employee ID almacenado: " + storedEmployeeId);
-            System.out.println("Employee ID encontrado en tabla: " + employeeIdFromTable);
-            
-            return employeeIdFromTable;
+            // Verificar que hay resultados en la tabla
+            WebElement tableBody = findElement(By.xpath("//div[@class='oxd-table-body']"));
+            if (tableBody != null) {
+                System.out.println("✅ Tabla de resultados encontrada");
+                
+                // Extraer el Employee ID de la primera fila de la tabla de resultados
+                WebElement employeeIdElement = findElement(employeeIdInTable);
+                String employeeIdFromTable = employeeIdElement.getText().trim();
+                
+                System.out.println("📊 Employee ID almacenado: " + storedEmployeeId);
+                System.out.println("📊 Employee ID encontrado en tabla: " + employeeIdFromTable);
+                
+                // Verificar si los IDs coinciden (pueden tener formato diferente)
+                if (employeeIdFromTable.equals(storedEmployeeId) || 
+                    employeeIdFromTable.contains(storedEmployeeId) ||
+                    storedEmployeeId.contains(employeeIdFromTable)) {
+                    System.out.println("✅ Employee IDs coinciden!");
+                } else {
+                    System.out.println("⚠️ Employee IDs NO coinciden - verificando formato...");
+                }
+                
+                return employeeIdFromTable;
+            } else {
+                System.out.println("❌ No se encontró la tabla de resultados");
+                return "";
+            }
             
         } catch (InterruptedException e) {
             throw new RuntimeException("Error durante la espera: " + e.getMessage());

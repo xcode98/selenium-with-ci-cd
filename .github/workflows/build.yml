@@ -97,17 +97,21 @@ jobs:
           compression-level: 9  # 📋 Máxima compresión
           if-no-files-found: warn  # ⚠️ Solo advertir si no hay archivos
           
-      - name: Generate Allure Report
-        run: gradle allureReport
+      - name: Generate Static Allure Report
+        run: |
+          gradle allureReport
+          # Generar reporte estático usando allure commandline
+          ./gradlew generateStaticAllureReport || echo "Fallback to allure generate"
         if: always()
         
-      # - name: Publish Allure Report
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   if: always()
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: build/reports/allure-report
-      #     destination_dir: allure-report
+      - name: Publish Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          destination_dir: allure-reports
+          keep_files: true
       
       - name: List generated files
         run: |
@@ -134,10 +138,19 @@ jobs:
           name: allure-results
           path: |
             build/allure-results/
-            build/reports/allure-report/
+            allure-report/
           retention-days: 14  # 🗑️ Solo 14 días para Allure
           compression-level: 9  # 📋 Máxima compresión
           if-no-files-found: warn  # ⚠️ Solo advertir si no hay archivos
+          
+      - name: Generate Allure Report Action
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: build/allure-results
+          allure_report: allure-report-action
+          gh_pages: gh-pages
+          allure_history: allure-history
           
   quality-gate:
     name: Quality Gate

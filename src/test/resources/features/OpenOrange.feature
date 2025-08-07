@@ -8,4 +8,4 @@ Feature: Open OrangeHRM
     
     Examples:
       | username | password  | firstName | middleName | lastName | employeeUsername | password1 | password2 |
-      | Admin    | admin123  | zxccc8    | Silva      | Medrano  | zxccc98          | Atest123  | Atest123  |
+      | Admin    | admin123  | zxccc8    | Silva      | Medrano  | user          | Atest123  | Atest123  |

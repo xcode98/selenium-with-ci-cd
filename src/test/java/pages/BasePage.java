@@ -2,6 +2,7 @@ package pages;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,7 +31,7 @@ public class BasePage {
             options.addArguments("--remote-allow-origins=*");
             
             // Opciones específicas para CI/CD
-            //options.addArguments("--headless");  // Ejecutar sin interfaz gráfica
+            options.addArguments("--headless");  // Ejecutar sin interfaz gráfica
             options.addArguments("--disable-gpu");
             options.addArguments("--disable-software-rasterizer");
             options.addArguments("--disable-background-timer-throttling");

@@ -67,6 +67,16 @@ allureServe {
     dependsOn test
 }
 
+// Task personalizada para generar reporte HTML estático
+task generateStaticAllureReport {
+    dependsOn test
+    doLast {
+        exec {
+            commandLine 'allure', 'generate', 'build/allure-results', '--clean', '--output', 'allure-report'
+        }
+    }
+}
+
 // Configuración SonarQube
 sonar {
     properties {
