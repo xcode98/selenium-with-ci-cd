@@ -97,21 +97,31 @@ jobs:
           compression-level: 9  # 📋 Máxima compresión
           if-no-files-found: warn  # ⚠️ Solo advertir si no hay archivos
           
-      - name: Generate Static Allure Report
+      - name: Install Allure CLI
         run: |
-          gradle allureReport
-          # Generar reporte estático usando allure commandline
-          ./gradlew generateStaticAllureReport || echo "Fallback to allure generate"
+          curl -o allure-commandline.zip -Ls https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.zip
+          unzip -q allure-commandline.zip
+          sudo mv allure-2.24.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+          allure --version
         if: always()
         
-      - name: Publish Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Generate Static Allure Report
+        run: |
+          echo "📋 Generando reporte HTML de Allure..."
+          allure generate build/allure-results --clean --output allure-report
+          echo "✅ Reporte generado en allure-report/"
+          ls -la allure-report/
         if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
-          destination_dir: allure-reports
-          keep_files: true
+        
+      # - name: Publish Allure Report to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   if: always()
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: allure-report
+      #     destination_dir: allure-reports
+      #     keep_files: true
       
       - name: List generated files
         run: |
@@ -143,14 +153,14 @@ jobs:
           compression-level: 9  # 📋 Máxima compresión
           if-no-files-found: warn  # ⚠️ Solo advertir si no hay archivos
           
-      - name: Generate Allure Report Action
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        with:
-          allure_results: build/allure-results
-          allure_report: allure-report-action
-          gh_pages: gh-pages
-          allure_history: allure-history
+      # - name: Generate Allure Report Action
+      #   uses: simple-elf/allure-report-action@master
+      #   if: always()
+      #   with:
+      #     allure_results: build/allure-results
+      #     allure_report: allure-report-action
+      #     gh_pages: gh-pages
+      #     allure_history: allure-history
           
   quality-gate:
     name: Quality Gate
