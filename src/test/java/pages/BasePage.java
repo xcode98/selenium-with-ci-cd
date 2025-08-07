@@ -31,7 +31,7 @@ public class BasePage {
             options.addArguments("--remote-allow-origins=*");
             
             // Opciones específicas para CI/CD
-            options.addArguments("--headless");  // Ejecutar sin interfaz gráfica
+            //options.addArguments("--headless");  // Ejecutar sin interfaz gráfica - DESHABILITADO para testing local
             options.addArguments("--disable-gpu");
             options.addArguments("--disable-software-rasterizer");
             options.addArguments("--disable-background-timer-throttling");

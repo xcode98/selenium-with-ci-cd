@@ -13,18 +13,20 @@ public class UsernameGenerator {
     private static final String COUNTER_FILE = "username_counter.txt";
     
     /**
-     * Genera un username único usando un contador incremental
-     * Formato: baseUsername + 6 dígitos (ej: user000001, user000002, etc.)
+     * Genera un username único usando timestamp + contador
+     * Formato: baseUsername + timestamp + contador (ej: user240807001, user240807002, etc.)
      * 
      * @param baseUsername El username base (ej: "user", "admin", etc.)
-     * @return Username único con formato baseUsername + 6 dígitos
+     * @return Username único con formato baseUsername + timestamp + contador
      */
     public static String generateUniqueUsername(String baseUsername) {
-        int counter = 1;
-        
         try {
-            // Leer el contador actual del archivo
+            // Usar timestamp para mayor unicidad
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm"));
+            
+            // Leer contador del archivo
             Path path = Paths.get(COUNTER_FILE);
+            int counter = 1;
             if (Files.exists(path)) {
                 String content = Files.readString(path).trim();
                 if (!content.isEmpty()) {
@@ -38,19 +40,19 @@ public class UsernameGenerator {
             // Guardar el nuevo contador
             Files.writeString(path, String.valueOf(counter));
             
-            // Generar username con formato: baseUsername + 6 dígitos
-            String uniqueUsername = baseUsername + String.format("%06d", counter);
+            // Generar username híbrido: base + timestamp + contador
+            String uniqueUsername = baseUsername + timestamp + String.format("%03d", counter);
             
-            System.out.println("🔢 Contador actual: " + counter);
+            System.out.println("🔢 Contador: " + counter + ", Timestamp: " + timestamp);
             System.out.println("🔑 Username generado: " + uniqueUsername);
             
             return uniqueUsername;
             
         } catch (Exception e) {
-            // Fallback: usar timestamp si hay error
-            System.out.println("⚠️ Error leyendo contador, usando timestamp como fallback");
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-            return baseUsername + timestamp.substring(timestamp.length() - 6);
+            // Fallback: solo timestamp
+            System.out.println("⚠️ Error leyendo contador, usando solo timestamp");
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+            return baseUsername + timestamp;
         }
     }
     
