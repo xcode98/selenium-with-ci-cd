@@ -4,7 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
-import net.bytebuddy.asm.Advice.Enter;
 
 public class OpenOrange extends BasePage {
     
@@ -20,9 +19,6 @@ public class OpenOrange extends BasePage {
     //Category PIM
     private final By btnPIM = By.cssSelector("a[href='/web/index.php/pim/viewPimModule']");
     private final By btnAddEmployee = By.xpath("//a[text()='Add Employee']");
-    private final By inputEmployeeName = By.xpath("//label[text()='Employee Name']/../following-sibling::div//input");
-    private final By inputEmployeeId =   By.xpath("//label[text()='Employee Id']/../following-sibling::div//input");
-    private final By btnSearch = By.cssSelector("button[type='submit']");
 
     //Locators for module add employee
     private final By inputFirstName = By.cssSelector("input[name='firstName']");
