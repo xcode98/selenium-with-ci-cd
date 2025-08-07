@@ -130,10 +130,10 @@ jobs:
           ls -la build/reports/ || echo "No reports directory"
           ls -la build/allure-results/ || echo "No allure-results directory"
           
-      # - name: SonarQube Analysis
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: gradle sonar --info
+      - name: SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: gradle sonar --info
       
       - name: Debug build status
         run: |
